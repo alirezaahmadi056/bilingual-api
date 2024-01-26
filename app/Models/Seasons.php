@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Seasons extends Model
 {
     use HasFactory;
+    protected $fillable = ["title","count_video","course_id"];
 }
