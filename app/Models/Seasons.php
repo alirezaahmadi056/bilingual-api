@@ -9,4 +9,12 @@ class Seasons extends Model
 {
     use HasFactory;
     protected $fillable = ["title","count_video","course_id"];
+
+    public function course(){
+        return $this->belongsTo(Course::class);
+    }
+
+    public function episodes(){
+        return $this->hasMany(Episode::class,"season_id");
+    }
 }

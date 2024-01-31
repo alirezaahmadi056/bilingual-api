@@ -9,4 +9,20 @@ class Course extends Model
 {
     use HasFactory;
     protected $fillable = ["name","image","description","price","user_id"];
+
+    public function comments(){
+        return $this->hasMany(Comment::class);
+    }
+
+    public function seasons(){
+        return $this->hasMany(Seasons::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(Cart::class);
+    }
+
+    public function cart(){
+        return $this->belongsTo(Cart::class);
+    }
 }

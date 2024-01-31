@@ -21,9 +21,8 @@ class User extends Authenticatable
         "id",
         'name',
         "phone",
-        'password',
-        "username",
-        "birthday"
+        "birthday",
+        "hash_login"
     ];
 
     /**
@@ -45,4 +44,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function comments(){
+        return $this->hasMany(Comment::class,"user_id");
+    }
+
+    public function cart(){
+        return $this->hasMany(Cart::class);
+    }
 }

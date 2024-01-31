@@ -25,6 +25,13 @@ Route::get('/dashboard', function () {
 
 Route::prefix("api")->group(function(){
     Route::post("/login",[ApiController::class,"login"]);
+    Route::post("/user/update",[ApiController::class,"updateuser"]);
+    Route::get("/home",[ApiController::class,"home"]);
+    Route::get("/version",[ApiController::class,"getversion"]);
+    Route::post("/single",[ApiController::class,"getcourse"]);
+    Route::post("/cart",[ApiController::class,"createcart"]);
+    Route::post("/cart/check",[ApiController::class,"checkcart"]);
+    Route::post("/hashcheck",[ApiController::class,"check_hash"]);
 });
 
 
