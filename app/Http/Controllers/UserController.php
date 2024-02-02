@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -11,7 +13,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view("users.index");
+        $users = User::all();
+        return view("users.index",compact("users"));
     }
 
     /**
@@ -33,9 +36,10 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
-        return view("users.courses");
+        $carts = $user->cart;
+        return view("users.courses",compact("carts"));
     }
 
     /**

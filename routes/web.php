@@ -38,7 +38,6 @@ Route::resource("/sliders",SliderController::class)->names("sliders");
 Route::resource("/courses",CourseController::class)->names("courses");
 Route::resource("/episodes",EpisodeController::class)->names("episodes");
 
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
