@@ -1,7 +1,15 @@
 <?php
 
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\EpisodeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Season;
+use App\Http\Controllers\SeasonController;
+use App\Http\Controllers\SliderController;
+use App\Http\Controllers\UserController;
+use App\Models\Course;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,8 +24,20 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    $courses = Course::all();
+    return view('welcome',compact("courses"));
+})->name("home");
+
+Route::get("/seasons/{id}",[SeasonController::class,"index"])->name("season.index");
+Route::delete("/seasons/{id}",[SeasonController::class,"destroy"])->name("seasons.destroy");
+Route::post("/seasons",[SeasonController::class,"store"])->name("seasons.store");
+Route::get("/seasons/{id}",[SeasonController::class,"create"])->name("seasons.create");
+Route::resource("/users",UserController::class)->names("users");
+Route::resource("/articles",ArticleController::class)->names("articles");
+Route::resource("/sliders",SliderController::class)->names("sliders");
+Route::resource("/courses",CourseController::class)->names("courses");
+Route::resource("/episodes",EpisodeController::class)->names("episodes");
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
