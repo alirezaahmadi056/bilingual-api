@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="flex justify-center items-center gap-3">
-    <button class="rounded-xl px-4 py-2 flex items-center text-primary text-xl border-[1px] border-primary my-8"><img src="{{ asset("Icon/add.svg") }}" alt=""><a href="{{ route("seasons.create") }}">افزودن فصل</a></button>
+    <button class="rounded-xl px-4 py-2 flex items-center text-primary text-xl border-[1px] border-primary my-8"><img src="{{ asset("Icon/add.svg") }}" alt=""><a href="{{ route("seasons.create",$id) }}">افزودن فصل</a></button>
     <button class="border-[1px] border-primary py-2 px-4 flex justify-center text-xl items-center gap-2 rounded-xl text-primary"><img src="{{ asset("/Icon/video-add.svg") }}" alt=""><a href="{{ route("episodes.create") }}">آپلود ویدیو</a></button>
 </div>
 <div class="container mx-auto flex flex-col justify-center items-center">
