@@ -28,10 +28,10 @@ Route::get('/', function () {
     return view('welcome',compact("courses"));
 })->name("home");
 
-Route::get("/seasons/{id}",[SeasonController::class,"index"])->name("season.index");
 Route::delete("/seasons/{id}",[SeasonController::class,"destroy"])->name("seasons.destroy");
 Route::post("/seasons",[SeasonController::class,"store"])->name("seasons.store");
-Route::get("/seasons/{id}",[SeasonController::class,"create"])->name("seasons.create");
+Route::get("/season/{id}",[SeasonController::class,"create"])->name("seasons.create");
+Route::get("/seasons/{id}",[SeasonController::class,"index"])->name("seasons.index");
 Route::resource("/users",UserController::class)->names("users");
 Route::resource("/articles",ArticleController::class)->names("articles");
 Route::resource("/sliders",SliderController::class)->names("sliders");

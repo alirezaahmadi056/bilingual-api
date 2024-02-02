@@ -16,7 +16,7 @@
                 <h1 class="text-2xl text-center font-bold">{{ $course->name }}</h1>
                 <span>قیمت: {{ $course->price }} تومان</span>
                 <p>{{ $course->description }}</p>
-                <button class="bg-primary w-full text-[#FFFFFF] text-xl py-2 rounded-xl"><a href="{{ route("season.index",$course->id) }}">جزییات</a></button>
+                <button class="bg-primary w-full text-[#FFFFFF] text-xl py-2 rounded-xl"><a href="{{ route("seasons.index",$course->id) }}">جزییات</a></button>
             </div>
         </div>
     @endforeach
