@@ -6,11 +6,14 @@
 
 @section('content')
 <div class="flex justify-center items-center mt-20">
-    <form class="flex flex-col gap-y-10" action="{{ route("sliders.store") }}" method="post" enctype="multipart/form-data">
+    <form class="flex flex-col gap-y-10" action="{{ route("sliders.update",$slider->id) }}" method="post" enctype="multipart/form-data">
         @csrf
+        @method("PUT")
+        <img src="{{ asset("slider_image/".$slider->image) }}" class="w-96 rounded-xl shadow-2xl" alt="">
+        <input type="hidden" name="beforeimage" value="{{ $slider->image }}">
         <div class="flex flex-col gap-3">
             <label for="link">لینک</label>
-            <input name="link" type="text" class="border-[1px] border-[#B2B2B2] rounded-xl py-3 px-4">
+            <input name="link" type="text" value="{{ $slider->link }}" class="border-[1px] border-[#B2B2B2] rounded-xl py-3 px-4">
         </div>
         <div class="flex flex-col gap-3">
             <label for="Upload">تصویر</label>

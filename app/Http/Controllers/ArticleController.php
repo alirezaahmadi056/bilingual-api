@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class ArticleController extends Controller
 {
@@ -11,7 +13,8 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        return view("articles.index");
+        $articles = Article::all();
+        return view("articles.index",compact("articles"));
     }
 
     /**
@@ -19,7 +22,7 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        //
+        return view("articles.create");
     }
 
     /**
@@ -27,7 +30,16 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $fileName = time() . '.' . $request->image->extension();
+        $request->image->move(public_path('article_image'), $fileName);
+
+        Article::create([
+            "title" => $request->title,
+            "description" => $request->description,
+            "image" => $fileName,
+        ]);
+
+        return redirect(route("articles.index"));
     }
 
     /**
@@ -41,24 +53,42 @@ class ArticleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Article $article)
     {
-        //
+        return view("articles.edit",compact("article"));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Article $article)
     {
-        //
+        $fileName = null;
+
+        if($request->image){
+            $image_path = public_path("article_image/$request->beforeimage");
+            if(File::exists($image_path)) {
+                File::delete($image_path);
+            }
+            $fileName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('article_image'), $fileName);
+        }
+
+        $article->update([
+            'title' => $request->title,
+            "description" => $request->description,
+            "image" => $fileName != null ? $fileName : $request->beforeimage
+        ]);
+
+        return redirect(route('articles.index'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Article $article)
     {
-        //
+        $article->delete();
+        return back();
     }
 }
