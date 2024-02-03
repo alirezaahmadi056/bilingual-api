@@ -22,7 +22,7 @@ class EpisodeController extends Controller
     public function create()
     {
         $seasons = Seasons::all();
-        return view("episode.create",compact("seasons"));
+        return view("episode.create", compact("seasons"));
     }
 
     /**
@@ -30,15 +30,15 @@ class EpisodeController extends Controller
      */
     public function store(Request $request)
     {
-        $videoFile = $request->file('video');
-        $fileName = time() . '.' . $videoFile->getClientOriginalName();
-        $videoFile->storeAs(public_path('Episodes'), $fileName);
-        //$request->video->move(public_path('Episodes'), $fileName);
+        $file = $request->file('video');
+        $filename = $file->getClientOriginalName();
+        $path = public_path() . '/Episodes/';
+        return $file->move($path, $filename);
 
         Episode::create([
             "title" => $request->title,
             "season_id" => $request->season,
-            "video" => $fileName,
+            "video" => $filename,
         ]);
 
         return back();

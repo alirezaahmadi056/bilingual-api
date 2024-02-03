@@ -19,6 +19,7 @@ return new class extends Migration
             $table->boolean("superuser")->default(false);
             $table->date('birthday')->nullable();
             $table->text("hash_login");
+            $table->text("password")->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
