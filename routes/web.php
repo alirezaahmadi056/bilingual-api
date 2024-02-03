@@ -53,6 +53,7 @@ Route::prefix("api")->group(function(){
     Route::post("/cart",[ApiController::class,"createcart"]);
     Route::post("/cart/check",[ApiController::class,"checkcart"]);
     Route::post("/hashcheck",[ApiController::class,"check_hash"]);
+    Route::post("/Kobs",[ApiController::class,"kobs"]);
 });
 
 

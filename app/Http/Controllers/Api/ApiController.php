@@ -23,9 +23,9 @@ class ApiController extends Controller
     }
 
     public function check_hash(Request $request){
-        $user = User::findOrFail($request->id);
+        $user = User::where($request->phone)->get();
 
-        if($user->hash_login == $request->hash_login){
+        if($user[0]->hash_login == $request->hash_login){
             return response()->json("OK");
         }else{
             return abort(500);
@@ -37,9 +37,15 @@ class ApiController extends Controller
         $user = User::where("phone", $request->phone)->get();
         $hash_login = Hash::make($request->phone);
         $account = false;
+        $name = "";
 
-        if(isset($user[0]) && $user[0]->name == null){
-            $account = true;
+        if(isset($user[0])){
+            if($user[0]->name == null){
+                $account = false;
+            }else{
+                $account = true;
+            }
+            $name = $user[0]->name;
             $user[0]->update([
                 "hash_login" => $hash_login
             ]);
@@ -58,9 +64,11 @@ class ApiController extends Controller
         $to = $request->phone;
         $from = '50004001280085';
         $text = "کد ورود:$code \r\n bilingual";
-        $sms->send($to, $from, $text);
+        $response = $sms->send($to, $from, $text);
+        $json = json_decode($response);
 
         return response()->json([
+            "name" => $user[0]->name == null ? "" : $user[0]->name,
             "code" => strval($code),
             "account" => $account,
             "hash_login" => Hash::make($request->phone)
@@ -70,25 +78,72 @@ class ApiController extends Controller
     public function updateuser(Request $request){
         $user = User::where("phone", $request->phone)->first();
 
-        $user->update([
-            "name" => $request->name
-        ]);
+        if($user->hash_login == $request->hash_login){
+            $user->update([
+                "name" => $request->name
+            ]);
+            return response()->json("OK");
+        }else{
+            return abort(500);
+        }
     }
 
-    public function getrules(){
+    public function kobs(Request $request){
+        $user = User::where("phone")->get();
 
+        $user[0]->update([
+            "name" => $request->name,
+            "email" => $request->name,
+            "birthday" => $request->birthday,
+        ]);
+
+        return response()->json("OK");
     }
 
     public function home(){
-        $courses = Course::all();
+        $course = Course::all();
         $slider = Slider::all();
         $article = Article::all();
 
+        $articles = $article->map(function($item){
+            return [
+                "id" => $item->id,
+                "title" => $item->title,
+                "description" => $item->description,
+                "image" => "https://bilingual.patrisbirjand.ir/public/article/".$item->image,
+            ];
+        });
+        $pop = $course->map(function($item){
+            return [
+                "name" => $item->name,
+                "percent" => $item->percent,
+                "description" => $item->description,
+                "price" => $item->price,
+                "image" => "https://bilingual.patrisbirjand.ir/public/courses/".$item->image,
+            ];
+        });
+        $courses = $course->map(function($item){
+            return [
+                "name" => $item->name,
+                "percent" => "",
+                "description" => $item->description,
+                "price" => $item->price,
+                "image" => "https://bilingual.patrisbirjand.ir/public/courses/".$item->image,
+            ];
+        });
+        $sliders = $slider->map(function($item){
+            return [
+                "id" => $item->id,
+                "link" => $item->link,
+                "image" => "https://bilingual.patrisbirjand.ir/public/slider/".$item->image,
+            ];
+        });
+
         return response()->json([
-            "popular" => $courses,
+            "popular" => $pop,
             "courses" => $courses,
-            "sliders" => $slider,
-            "articles" => $article,
+            "sliders" => $sliders,
+            "articles" => $articles,
         ]);
     }
 

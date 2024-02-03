@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->string('phone')->unique();
+            $table->string('email')->unique();
+            $table->boolean("superuser")->default(false);
             $table->date('birthday')->nullable();
             $table->text("hash_login");
             $table->rememberToken();

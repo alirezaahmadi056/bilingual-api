@@ -17,6 +17,7 @@ class VerifyCsrfToken extends Middleware
         "/api/single",
         "/api/cart",
         "/api/cart/check",
-        "/api/hashcheck"
+        "/api/hashcheck",
+        "/api/Kobs"
     ];
 }
