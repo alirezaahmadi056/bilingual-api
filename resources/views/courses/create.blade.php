@@ -10,6 +10,7 @@
             @csrf
             <input name="name" type="text" class=" rounded-md border-[#B2B2B2]" placeholder="نام دوره">
             <input name="price" type="number" class=" rounded-md border-[#B2B2B2]" placeholder="قیمت">
+            <input name="spot_id" type="text" class=" rounded-md border-[#B2B2B2]" placeholder="شناسه دوره در اسپات پلیر">
             <textarea name="description" class=" rounded-md border-[#B2B2B2]" id="" cols="30" rows="10" placeholder="توضیحات"></textarea>
             <label for="image">عکس:</label>
             <input name="image" type="file" class=" rounded-md border-[#B2B2B2]">

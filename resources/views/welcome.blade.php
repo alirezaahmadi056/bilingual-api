@@ -15,7 +15,8 @@
             <div class="px-6 py-3 flex flex-col gap-5">
                 <h1 class="text-2xl text-center font-bold">{{ $course->name }}</h1>
                 <span>قیمت: {{ $course->price }} تومان</span>
-                <p>{{ $course->description }}</p>
+                <p><span class="text-lg ml-2">شناسه دوره:</span>{{ $course->spot_id }}</p>
+                <p class="text-[#3f3f3f]">{{ $course->description }}</p>
                 <button class="bg-primary w-full text-[#FFFFFF] text-xl py-2 rounded-xl"><a href="{{ route("seasons.index",$course->id) }}">جزییات</a></button>
             </div>
         </div>

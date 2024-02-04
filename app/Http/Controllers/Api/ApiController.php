@@ -12,6 +12,7 @@ use App\Models\Slider;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Melipayamak\MelipayamakApi;
 
 class ApiController extends Controller
@@ -183,10 +184,28 @@ class ApiController extends Controller
     }
 
     public function createcart(Request $request){
+
+        $course = Course::findOrFail($request->course_id);
+        $user = User::findOrFail($request->user_id);
+
+        $response = Http::withHeaders([
+            '$LEVEL' => -1,
+            '$API' => "ZbvmlCVJAUWUonPw6IjX6QWriQs+hQ=="
+        ])->post("https://panel.spotplayer.ir/license/edit/",[
+            "test" => true,
+            "course" => [$course->spot_id],
+            "name" => $user->name,
+            "watermark" => ["texts" => [["text" => $user->phone]]]
+        ]);
+        $res = json_decode($response);
+        $key = $res->key;
+
         $cart = Cart::create([
             "user_id" => $request->user_id,
             "course_id" => $request->course_id,
+            "license" => $key,
         ]);
+
 
         if($cart){
             return response()->json("OK");
