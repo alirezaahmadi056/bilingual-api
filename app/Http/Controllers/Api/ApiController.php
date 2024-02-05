@@ -24,10 +24,17 @@ class ApiController extends Controller
     }
 
     public function check_hash(Request $request){
-        $user = User::where($request->phone)->get();
+        $user = User::where("phone",$request->phone)->first();
 
-        if($user[0]->hash_login == $request->hash_login){
-            return response()->json("OK");
+
+        if($user->hash_login == $request->hash_login){
+            return response()->json([
+                "name" => $user->name == null ? "" : $user->name,
+                "phone" => $user->phone == null ? "" : $user->phone,
+                "email" => $user->email == null ? "" : $user->email,
+                "birthday" => $user->birthday == null ? "" : $user->birthday,
+                "hash_login" => $user->hash_login
+            ]);
         }else{
             return abort(500);
         }
@@ -69,10 +76,10 @@ class ApiController extends Controller
         $json = json_decode($response);
 
         return response()->json([
-            "name" => $user[0]->name == null ? "" : $user[0]->name,
+            "name" => $name == null ? "" : $name,
             "code" => strval($code),
             "account" => $account,
-            "hash_login" => Hash::make($request->phone)
+            "hash_login" => $hash_login
         ]);
     }
 
@@ -114,6 +121,7 @@ class ApiController extends Controller
                 "image" => "https://bilingual.patrisbirjand.ir/public/article/".$item->image,
             ];
         });
+
         $pop = $course->map(function($item){
             return [
                 "name" => $item->name,
@@ -123,6 +131,7 @@ class ApiController extends Controller
                 "image" => "https://bilingual.patrisbirjand.ir/public/courses/".$item->image,
             ];
         });
+
         $courses = $course->map(function($item){
             return [
                 "name" => $item->name,
@@ -132,6 +141,7 @@ class ApiController extends Controller
                 "image" => "https://bilingual.patrisbirjand.ir/public/courses/".$item->image,
             ];
         });
+
         $sliders = $slider->map(function($item){
             return [
                 "id" => $item->id,
@@ -215,13 +225,81 @@ class ApiController extends Controller
     }
 
     public function checkcart(Request $request){
-        $carts = Cart::where("user_id",$request->id)->get();
-        $result = $carts->map(function($item){
+        $user = User::where("phone",$request->phone)->get();
+        $cart = Cart::where("user_id",$user[0]->id)->where("status",0)->get();
+        $course = $cart->map(function($item){
             return Course::findOrFail($item->course_id);
         });
 
+        $courses = $course->map(function($item){
+            $car = Cart::where("course_id",$item->id)->first();
+            return [
+                "name" => $item->name,
+                "percent" => $item->percent,
+                "description" => $item->description,
+                "spot_id" => $item->spot_id,
+                "price" => $item->price,
+                "image" => "https://bilingual.patrisbirjand.ir/public/courses_image/".$item->image,
+            ];
+        });
+
         return response()->json([
-            "result" => $result
+            "result" => $courses
+        ]);
+    }
+
+    public function mycourse(Request $request){
+        $user = User::where("phone",$request->phone)->get();
+        $cart = Cart::where("user_id",$user[0]->id)->where("status",1)->get();
+        $course = $cart->map(function($item){
+            return Course::findOrFail($item->course_id);
+        });
+
+        $courses = $course->map(function($item){
+            $car = Cart::where("course_id",$item->id)->first();
+            return [
+                "name" => $item->name,
+                "percent" => $item->percent,
+                "description" => $item->description,
+                "spot_id" => $item->spot_id,
+                "price" => $item->price,
+                "image" => "https://bilingual.patrisbirjand.ir/public/courses_image/".$item->image,
+            ];
+        });
+
+        return response()->json([
+            "result" => $courses
+        ]);
+    }
+
+    public function getlicense(Request $request){
+        $use = User::where("phone",$request->phone)->first();
+
+        if($request->hash_login == $use->hash_login){
+            $user = collect($use->cart);
+
+            $licenses = $user->map(function($item){
+                $course = Course::findOrFail($item->course_id);
+                return [
+                    "name" => $course->name,
+                    "license" => $item->license
+                ];
+            });
+
+            return response()->json([
+                "result" => $licenses
+            ]);
+        }else{
+            return abort(500);
+        }
+
+    }
+
+    public function getarticles(){
+        $articles = Article::all();
+
+        return response()->json([
+            "result" => $articles
         ]);
     }
 }
