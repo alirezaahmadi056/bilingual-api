@@ -262,6 +262,7 @@ class ApiController extends Controller
                 "percent" => $item->percent,
                 "description" => $item->description,
                 "spot_id" => $item->spot_id,
+                "hour" => $item->hour,
                 "price" => $item->price,
                 "image" => "https://bilingual.patrisbirjand.ir/public/courses_image/".$item->image,
             ];

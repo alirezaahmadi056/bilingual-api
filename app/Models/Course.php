@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Course extends Model
 {
     use HasFactory;
-    protected $fillable = ["name","image","description","price","spot_id","percent"];
+    protected $fillable = ["name","image","description","price","spot_id","percent","hour"];
 
     public function comments(){
         return $this->hasMany(Comment::class);

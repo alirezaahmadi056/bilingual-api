@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer("price");
             $table->text("spot_id");
             $table->integer("percent");
+            $table->integer("hour");
             $table->timestamps();
         });
 
