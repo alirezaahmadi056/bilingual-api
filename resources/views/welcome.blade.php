@@ -17,7 +17,7 @@
                 <span>قیمت: {{ $course->price }} تومان</span>
                 <p><span class="text-lg ml-2">شناسه دوره:</span>{{ $course->spot_id }}</p>
                 <p class="text-[#3f3f3f]">{{ $course->description }}</p>
-                <button class="bg-primary w-full text-[#FFFFFF] text-xl py-2 rounded-xl"><a href="{{ route("seasons.index",$course->id) }}">جزییات</a></button>
+                <button class="bg-primary w-full text-[#FFFFFF] text-xl py-2 rounded-xl"><a href="{{ route("seasons.index",$course->id) }}">فصل ها</a></button>
             </div>
         </div>
     @endforeach

@@ -16,7 +16,15 @@
         </select>
         <label for="video">ویدیو:</label>
         <input name="video" type="file" class=" rounded-md border-[#B2B2B2]">
-        <button type="submit" class="bg-primary w-full text-[#FFFFFF] text-xl py-2 rounded-xl">ثبت</button>
+        <button id="success" type="submit" onclick="PleaseWait()" class="bg-primary w-full text-[#FFFFFF] text-xl py-2 rounded-xl">ثبت</button>
     </form>
 </div>
+@endsection
+
+@section('js')
+<script>
+    function PleaseWait() {
+      document.getElementById("success").innerHTML = "لطفا صبر کنید ...";
+    }
+    </script>
 @endsection

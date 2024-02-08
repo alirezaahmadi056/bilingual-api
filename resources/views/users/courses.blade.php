@@ -13,7 +13,8 @@
             <div class="px-6 py-3 flex flex-col gap-5">
                 <h1 class="text-2xl text-center font-bold">{{ $course->name }}</h1>
                 <span>قیمت: {{ $course->price }} تومان</span>
-                <p>{{ $course->description }}</p>
+                <span>وضعیت: @if($cart->status == 1) پرداخت شده @else پرداخت نشده @endif </span>
+                <p class="border-[1px] border-primary rounded-md py-2 px-3 text-center">لایسنس: {{ $cart->license }}</p>
             </div>
         </div>
         @endforeach

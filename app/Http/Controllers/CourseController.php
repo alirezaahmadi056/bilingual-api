@@ -35,6 +35,8 @@ class CourseController extends Controller
             "name" => $request->name,
             "description" => $request->description,
             "price" => $request->price,
+            "percent" => $request->percent,
+            "hour" => $request->hour,
             "spot_id" => $request->spot_id,
             "image" => $fileName,
         ]);

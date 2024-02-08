@@ -88,6 +88,10 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
+        $image_path = public_path("article_image/$article->video");
+        if(File::exists($image_path)) {
+            File::delete($image_path);
+        }
         $article->delete();
         return back();
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Episode;
 use App\Models\Seasons;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class EpisodeController extends Controller
 {
@@ -73,6 +74,10 @@ class EpisodeController extends Controller
      */
     public function destroy(Episode $episode)
     {
+        $image_path = public_path("Episodes/$episode->video");
+        if(File::exists($image_path)) {
+            File::delete($image_path);
+        }
         $episode->delete();
         return back();
     }
