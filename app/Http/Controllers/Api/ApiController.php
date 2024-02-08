@@ -10,6 +10,7 @@ use App\Models\Course;
 use App\Models\Seasons;
 use App\Models\Slider;
 use App\Models\User;
+use App\Models\Episode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -25,7 +26,6 @@ class ApiController extends Controller
 
     public function check_hash(Request $request){
         $user = User::where("phone",$request->phone)->first();
-
 
         if($user->hash_login == $request->hash_login){
             return response()->json([
@@ -48,11 +48,7 @@ class ApiController extends Controller
         $name = "";
 
         if(isset($user[0])){
-            if($user[0]->name == null){
-                $account = false;
-            }else{
-                $account = true;
-            }
+            $account = true;
             $name = $user[0]->name;
             $user[0]->update([
                 "hash_login" => $hash_login
@@ -97,9 +93,9 @@ class ApiController extends Controller
     }
 
     public function kobs(Request $request){
-        $user = User::where("phone")->get();
+        $user = User::where("phone",$request->phone)->first();
 
-        $user[0]->update([
+        $user->update([
             "name" => $request->name,
             "email" => $request->name,
             "birthday" => $request->birthday,
@@ -118,7 +114,7 @@ class ApiController extends Controller
                 "id" => $item->id,
                 "title" => $item->title,
                 "description" => $item->description,
-                "image" => "https://bilingual.patrisbirjand.ir/public/article/".$item->image,
+                "image" => "https://bilingual.patrisbirjand.ir/public/article_image/".$item->image,
             ];
         });
 
@@ -128,7 +124,7 @@ class ApiController extends Controller
                 "percent" => $item->percent,
                 "description" => $item->description,
                 "price" => $item->price,
-                "image" => "https://bilingual.patrisbirjand.ir/public/courses/".$item->image,
+                "image" => "https://bilingual.patrisbirjand.ir/public/courses_image/".$item->image,
             ];
         });
 
@@ -138,7 +134,7 @@ class ApiController extends Controller
                 "percent" => "",
                 "description" => $item->description,
                 "price" => $item->price,
-                "image" => "https://bilingual.patrisbirjand.ir/public/courses/".$item->image,
+                "image" => "https://bilingual.patrisbirjand.ir/public/courses_image/".$item->image,
             ];
         });
 
@@ -146,7 +142,7 @@ class ApiController extends Controller
             return [
                 "id" => $item->id,
                 "link" => $item->link,
-                "image" => "https://bilingual.patrisbirjand.ir/public/slider/".$item->image,
+                "image" => "https://bilingual.patrisbirjand.ir/public/slider_image/".$item->image,
             ];
         });
 
@@ -159,37 +155,29 @@ class ApiController extends Controller
     }
 
     public function getcourse(Request $request){
+        $user = User::where("phone",$request->phone)->first();
+        $cart = Cart::where("course_id",$request->id)->where("user_id",$user->id)->where("status",1)->first();
         $comments = Comment::where("course_id",$request->id)->get();
         $season = Seasons::where("course_id",$request->id)->get();
         $courses = Course::findOrFail($request->id);
         $seasons = collect($season);
 
-        $episodes = $seasons->map(function($item){
-            return $item->episodes;
-        });
-
-        $COO = $comments->map(function($item){
-            return [
-                "title" => $item->title,
-                "description" => $item->description,
-                "points" => $item->points,
-                "user" => $item->user,
-            ];
-        });
-
         $result = $seasons->map(function($item){
+            $videos = Episode::where("season_id",$item->id)->get();
             return [
-                "title"=>$item->title,
-                "course_id" => $item->course_id,
-                "count_video" => $item->count_video,
+                "name"=>$item->title,
+                "video" => $videos
             ];
         });
 
         return response()->json([
-            "Comments" => $COO,
-            "seasons" => $result,
-            "courses" => $courses,
-            "episodes" => $episodes,
+            "name"=>$courses->name,
+            "teacher_name"=>$courses->teacher_name,
+            "hour"=>$courses->hour,
+            "description"=>$courses->description,
+            "score"=>$courses->score,
+            "license"=>$cart == null ? "" : $cart->license,
+            "season" => $result,
         ]);
     }
 
@@ -236,7 +224,6 @@ class ApiController extends Controller
             return [
                 "name" => $item->name,
                 "percent" => $item->percent,
-                "description" => $item->description,
                 "spot_id" => $item->spot_id,
                 "price" => $item->price,
                 "image" => "https://bilingual.patrisbirjand.ir/public/courses_image/".$item->image,
@@ -260,7 +247,6 @@ class ApiController extends Controller
             return [
                 "name" => $item->name,
                 "percent" => $item->percent,
-                "description" => $item->description,
                 "spot_id" => $item->spot_id,
                 "hour" => $item->hour,
                 "price" => $item->price,
@@ -297,7 +283,16 @@ class ApiController extends Controller
     }
 
     public function getarticles(){
-        $articles = Article::all();
+        $article = Article::all();
+
+        $articles = $article->map(function($item){
+            return [
+                "id" => $item->id,
+                "title" => $item->title,
+                "description" => $item->description,
+                "image" => "https://bilingual.patrisbirjand.ir/public/article_image/".$item->image,
+            ];
+        });
 
         return response()->json([
             "result" => $articles
