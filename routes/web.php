@@ -57,6 +57,8 @@ Route::prefix("api")->group(function(){
     Route::post("/mycourse",[ApiController::class,"mycourse"]);
     Route::post("/license",[ApiController::class,"getlicense"]);
     Route::get("/articles",[ApiController::class,"getarticles"]);
+    Route::post("/comment/create",[ApiController::class,"commentcreate"]);
+    Route::post("/comments",[ApiController::class,"getcomments"]);
 });
 
 

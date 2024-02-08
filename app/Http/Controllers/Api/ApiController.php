@@ -298,4 +298,26 @@ class ApiController extends Controller
             "result" => $articles
         ]);
     }
+
+    public function commentcreate(Request $request){
+        $user = User::where("phone",$request->phone)->first();
+
+        Comment::create([
+            "course_id" => $request->id,
+            "user_id" => $user->id,
+            "title" => $request->title,
+            "description" => $request->description,
+            "points" => $request->score,
+        ]);
+
+        return abort(200);
+    }
+
+    public function getcomments(Request $request){
+        $course = Course::findOrFail($request->id);
+
+        return response()->json([
+            "result" => $course->comments
+        ]);
+    }
 }

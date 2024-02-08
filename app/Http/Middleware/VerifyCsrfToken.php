@@ -20,6 +20,8 @@ class VerifyCsrfToken extends Middleware
         "/api/hashcheck",
         "/api/Kobs",
         "/api/mycourse",
-        "/api/license"
+        "/api/license",
+        "/api/comment/create",
+        "/api/comments"
     ];
 }
