@@ -22,6 +22,7 @@ class VerifyCsrfToken extends Middleware
         "/api/mycourse",
         "/api/license",
         "/api/comment/create",
-        "/api/comments"
+        "/api/comments",
+        "/api/cart/delete"
     ];
 }

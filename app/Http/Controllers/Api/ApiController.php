@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Melipayamak\MelipayamakApi;
+use Morilog\Jalali\Jalalian;
 
 class ApiController extends Controller
 {
@@ -157,9 +158,9 @@ class ApiController extends Controller
     public function getcourse(Request $request){
         $user = User::where("phone",$request->phone)->first();
         $cart = Cart::where("course_id",$request->id)->where("user_id",$user->id)->where("status",1)->first();
-        $comments = Comment::where("course_id",$request->id)->get();
         $season = Seasons::where("course_id",$request->id)->get();
         $courses = Course::findOrFail($request->id);
+        $intro = Episode::where("season_id",$season[0]->id)->skip(0)->take(3)->get();
         $seasons = collect($season);
 
         $result = $seasons->map(function($item){
@@ -171,9 +172,10 @@ class ApiController extends Controller
         });
 
         return response()->json([
+            "intro" => $intro,
             "name"=>$courses->name,
             "teacher_name"=>$courses->teacher_name,
-            "hour"=>$courses->hour,
+            "hour"=> $courses->hour,
             "description"=>$courses->description,
             "score"=>$courses->score,
             "license"=>$cart == null ? "" : $cart->license,
@@ -222,6 +224,7 @@ class ApiController extends Controller
         $courses = $course->map(function($item){
             $car = Cart::where("course_id",$item->id)->first();
             return [
+                "id" => $item->id,
                 "name" => $item->name,
                 "percent" => $item->percent,
                 "spot_id" => $item->spot_id,
@@ -233,6 +236,14 @@ class ApiController extends Controller
         return response()->json([
             "result" => $courses
         ]);
+    }
+
+    public function deletecart(Request $request){
+        $user = User::where("phone",$request->phone)->first();
+        $course = Course::findOrFail($request->id);
+        $cart = Cart::where("course_id",$course->id)->where("user_id",$user->id)->first();
+        $cart->delete();
+        return response()->json("OK");
     }
 
     public function mycourse(Request $request){
@@ -305,19 +316,33 @@ class ApiController extends Controller
         Comment::create([
             "course_id" => $request->id,
             "user_id" => $user->id,
-            "title" => $request->title,
+            "title" => $user->name,
             "description" => $request->description,
             "points" => $request->score,
         ]);
 
-        return abort(200);
+        return response()->json("OK");
     }
 
     public function getcomments(Request $request){
         $course = Course::findOrFail($request->id);
 
+        $comment = collect($course->comments);
+
+        $comments = $comment->map(function($item){
+            return [
+                "id" => $item->id,
+                "user_id" => $item->user_id,
+                "course_id" => $item->course_id,
+                "title" => $item->title,
+                "description" => $item->description,
+                "points" => $item->points,
+                "created_at" => Jalalian::forge($item->created_at)->format('%B %d، %Y'),
+            ];
+        });
+
         return response()->json([
-            "result" => $course->comments
+            "result" => $comments
         ]);
     }
 }
