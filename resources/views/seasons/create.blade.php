@@ -10,7 +10,6 @@
         @csrf
         <input type="hidden" name="course_id" value="{{ $id }}">
         <input name="title" type="text" class=" rounded-md border-[#B2B2B2]" placeholder="تایتل">
-        <input name="count" type="number" class=" rounded-md border-[#B2B2B2]" placeholder="تعداد ویدیو">
         <button type="submit" class="bg-primary w-full text-[#FFFFFF] text-xl py-2 rounded-xl">ثبت</button>
     </form>
 </div>

@@ -51,6 +51,8 @@ class ApiController extends Controller
         if(isset($user[0])){
             $account = true;
             $name = $user[0]->name;
+            $email = $user[0]->email;
+            $birthday = $user[0]->birthday;
             $user[0]->update([
                 "hash_login" => $hash_login
             ]);
@@ -76,7 +78,9 @@ class ApiController extends Controller
             "name" => $name == null ? "" : $name,
             "code" => strval($code),
             "account" => $account,
-            "hash_login" => $hash_login
+            "hash_login" => $hash_login,
+            "email" => $email == null ? "" : $email,
+            "birthday" => $birthday == null ? "" : $birthday
         ]);
     }
 
@@ -98,7 +102,7 @@ class ApiController extends Controller
 
         $user->update([
             "name" => $request->name,
-            "email" => $request->name,
+            "email" => $request->email,
             "birthday" => $request->birthday,
         ]);
 
@@ -122,8 +126,9 @@ class ApiController extends Controller
         $pop = $course->map(function($item){
             return [
                 "id" => $item->id,
+                "is_pop" => $item->is_pop,
                 "name" => $item->name,
-                "percent" => $item->percent,
+                "percent" => $item->percent == null ? "" : $item->percent,
                 "description" => $item->description,
                 "price" => $item->price,
                 "image" => "https://ahmadi-test-app.ir/public/courses_image/".$item->image,
@@ -134,7 +139,7 @@ class ApiController extends Controller
             return [
                 "id" => $item->id,
                 "name" => $item->name,
-                "percent" => "",
+                "percent" => $item->percent == null ? "" : $item->percent,
                 "description" => $item->description,
                 "price" => $item->price,
                 "image" => "https://ahmadi-test-app.ir/public/courses_image/".$item->image,
@@ -170,8 +175,12 @@ class ApiController extends Controller
         }
         $season = Seasons::where("course_id",$request->id)->get();
         $courses = Course::findOrFail($request->id);
-        $intro = Episode::where("season_id",$season[0]->id)->skip(0)->take(3)->get();
-        $intro_result = $intro->map(function($item){
+        $intro = null;
+        $intro_collect = collect($intro);
+        if($season->count() > 0){
+            $intro_collect = Episode::where("season_id",$season[0]->id)->skip(0)->take(3)->get();
+        }
+        $intro_result = $intro_collect->map(function($item){
             return [
                 "id" => $item->id,
                 "video" => "https://ahmadi-test-app.ir/Episodes/$item->video",
@@ -187,7 +196,7 @@ class ApiController extends Controller
             return [
                 "name"=>$item->title,
                 "time" => $item->time,
-                "count_video" => $item->count_video,
+                "count_video" => $videos->count(),
                 "video" => $videos->map(function($video){
                     return [
                         "id" => $video->id,
@@ -205,10 +214,11 @@ class ApiController extends Controller
             "intro" => $intro_result,
             "name" => $courses->name,
             "price" => $courses->price,
-            "teacher_name" => $courses->teacher_name,
+            "teacher_name" => $courses->teacher_name == null ? "" : $courses->teacher_name,
             "hour" => $courses->hour,
+            "percent" => $courses->percent == null ? "" : $courses->percent,
             "description" => $courses->description,
-            "score" => $courses->score,
+            "score" => $courses->score == null ? "0" : $courses->score,
             "license" => $license == null ? "" : $license,
             "season" => $result
         ]);
@@ -267,13 +277,13 @@ class ApiController extends Controller
                 "percent" => $item->percent,
                 "spot_id" => $item->spot_id,
                 "price" => $total,
-                "image" => "https://bilingual.patrisbirjand.ir/public/courses_image/".$item->image,
+                "image" => "https://ahmadi-test-app.ir/public/courses_image/".$item->image,
             ];
         });
 
         return response()->json([
             "result" => $courses,
-            "total" => $courses->sum("price")
+            "total" => strval($courses->sum("price"))
         ]);
     }
 

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Episode extends Model
 {
     use HasFactory;
-    protected $fillable = ["video","title","season_id"];
+    protected $fillable = ["video","title","season_id","time"];
 
     public function season(){
         return $this->belongsTo(Seasons::class);

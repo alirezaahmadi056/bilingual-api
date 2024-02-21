@@ -27,8 +27,7 @@ class SeasonController extends Controller
     public function store(Request $request){
         Seasons::create([
             "title" => $request->title,
-            "course_id" => $request->course_id,
-            "count_video" => $request->count,
+            "course_id" => $request->course_id
         ]);
 
         return redirect(route("seasons.index",$request->course_id));
