@@ -7,7 +7,8 @@
 @section('content')
 <div class="flex justify-center items-center gap-3">
     <button class="rounded-xl px-4 py-2 flex items-center text-primary max-sm:text-sm text-xl border-[1px] border-primary my-8"><img src="{{ asset("Icon/add.svg") }}" alt=""><a href="{{ route("seasons.create",$id) }}">افزودن فصل</a></button>
-    <button class="border-[1px] border-primary py-2 px-4 flex justify-center max-sm:text-sm text-xl items-center gap-2 rounded-xl text-primary"><img src="{{ asset("/Icon/video-add.svg") }}" alt=""><a href="{{ route("episodes.create") }}">آپلود ویدیو</a></button>
+    <button class="border-primary border-[1px] py-2 px-4 flex justify-center items-center gap-1 text-xl rounded-xl text-primary"><img src="{{ asset("/Icon/add.svg") }}" alt=""><a href="{{ route("seasons.sub.create",$editid) }}">افزودن زیرفصل</a></button>
+    <button class="border-[1px] border-primary py-2 px-4 flex justify-center max-sm:text-sm text-xl items-center gap-2 rounded-xl text-primary"><img src="{{ asset("/Icon/video-add.svg") }}" alt=""><a href="{{ route("episodes.show",$editid) }}">آپلود ویدیو</a></button>
 </div>
 <div class="container mx-auto flex flex-col justify-center items-center">
     @foreach ($seasons as $season)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -11,9 +12,14 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        $users = null;
+        if(isset($request->search)){
+            $users = User::where('phone', 'like', '%' . request('search') . '%')->get();
+        }else{
+            $users = User::all();
+        }
         return view("users.index",compact("users"));
     }
 
@@ -38,8 +44,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $carts = $user->cart;
-        return view("users.courses",compact("carts"));
+        $carts = Cart::where("user_id",$user->id)->where("status",1)->get();
+        $name = $user->name;
+        return view("users.courses",compact(["carts","name"]));
     }
 
     /**

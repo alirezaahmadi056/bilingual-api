@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\Episode;
 use App\Models\Seasons;
 use Illuminate\Http\Request;
@@ -22,8 +23,7 @@ class EpisodeController extends Controller
      */
     public function create()
     {
-        $seasons = Seasons::all();
-        return view("episode.create", compact("seasons"));
+        //
     }
 
     /**
@@ -34,7 +34,7 @@ class EpisodeController extends Controller
         $file = $request->file('video');
         $filename = $file->getClientOriginalName();
         $path = public_path() . '/Episodes/';
-        return $file->move($path, $filename);
+        $file->move($path, $filename);
 
         Episode::create([
             "title" => $request->title,
@@ -50,7 +50,9 @@ class EpisodeController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $course = Course::findOrFail($id);
+        $seasons = $course->seasons;
+        return view("episode.create", compact("seasons"));
     }
 
     /**

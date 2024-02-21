@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppPages;
 use App\Models\Slider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -22,7 +23,8 @@ class SliderController extends Controller
      */
     public function create()
     {
-        return view("sliders.create");
+        $pages = AppPages::all();
+        return view("sliders.create",compact("pages"));
     }
 
     /**
@@ -34,7 +36,7 @@ class SliderController extends Controller
         $request->image->move(public_path('slider_image'), $fileName);
 
         Slider::create([
-            "link" => $request->link,
+            "link" => "app://$request->link",
             "image" => $fileName,
         ]);
 
@@ -54,7 +56,8 @@ class SliderController extends Controller
      */
     public function edit(Slider $slider)
     {
-        return view("sliders.edit",compact("slider"));
+        $pages = AppPages::all();
+        return view("sliders.edit",compact("slider","pages"));
     }
 
     /**
@@ -74,7 +77,7 @@ class SliderController extends Controller
         }
 
         $slider->update([
-            'link' => $request->link,
+            'link' => "app://$request->link",
             "image" => $fileName != null ? $fileName : $request->beforeimage
         ]);
 

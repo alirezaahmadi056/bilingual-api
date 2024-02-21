@@ -115,27 +115,29 @@ class ApiController extends Controller
                 "id" => $item->id,
                 "title" => $item->title,
                 "description" => $item->description,
-                "image" => "https://bilingual.patrisbirjand.ir/public/article_image/".$item->image,
+                "image" => "https://ahmadi-test-app.ir/public/article_image/".$item->image,
             ];
         });
 
         $pop = $course->map(function($item){
             return [
+                "id" => $item->id,
                 "name" => $item->name,
                 "percent" => $item->percent,
                 "description" => $item->description,
                 "price" => $item->price,
-                "image" => "https://bilingual.patrisbirjand.ir/public/courses_image/".$item->image,
+                "image" => "https://ahmadi-test-app.ir/public/courses_image/".$item->image,
             ];
         });
 
         $courses = $course->map(function($item){
             return [
+                "id" => $item->id,
                 "name" => $item->name,
                 "percent" => "",
                 "description" => $item->description,
                 "price" => $item->price,
-                "image" => "https://bilingual.patrisbirjand.ir/public/courses_image/".$item->image,
+                "image" => "https://ahmadi-test-app.ir/public/courses_image/".$item->image,
             ];
         });
 
@@ -143,7 +145,7 @@ class ApiController extends Controller
             return [
                 "id" => $item->id,
                 "link" => $item->link,
-                "image" => "https://bilingual.patrisbirjand.ir/public/slider_image/".$item->image,
+                "image" => "https://ahmadi-test-app.ir/slider_image/".$item->image,
             ];
         });
 
@@ -156,37 +158,66 @@ class ApiController extends Controller
     }
 
     public function getcourse(Request $request){
-        $user = User::where("phone",$request->phone)->first();
-        $cart = Cart::where("course_id",$request->id)->where("user_id",$user->id)->where("status",1)->first();
+        $license = null;
+        if($request->phone != null){
+            $user = User::where("phone",$request->phone)->first();
+            $cart = Cart::where("course_id",$request->id)->where("user_id",$user->id)->where("status",1)->first();
+            if($cart){
+                $license = $cart->license;
+            }else{
+                $license = null;
+            }
+        }
         $season = Seasons::where("course_id",$request->id)->get();
         $courses = Course::findOrFail($request->id);
         $intro = Episode::where("season_id",$season[0]->id)->skip(0)->take(3)->get();
+        $intro_result = $intro->map(function($item){
+            return [
+                "id" => $item->id,
+                "video" => "https://ahmadi-test-app.ir/Episodes/$item->video",
+                "title" => $item->title,
+                "time" => $item->time,
+                "season_id" => $item->season_id,
+            ];
+        });
         $seasons = collect($season);
 
         $result = $seasons->map(function($item){
             $videos = Episode::where("season_id",$item->id)->get();
             return [
                 "name"=>$item->title,
-                "video" => $videos
+                "time" => $item->time,
+                "count_video" => $item->count_video,
+                "video" => $videos->map(function($video){
+                    return [
+                        "id" => $video->id,
+                        "video" => "https://ahmadi-test-app.ir/Episodes/$video->video",
+                        "title" => $video->title,
+                        "time" => $video->time,
+                        "season_id" => $video->season_id,
+                    ];
+                })
             ];
         });
 
         return response()->json([
-            "intro" => $intro,
-            "name"=>$courses->name,
-            "teacher_name"=>$courses->teacher_name,
-            "hour"=> $courses->hour,
-            "description"=>$courses->description,
-            "score"=>$courses->score,
-            "license"=>$cart == null ? "" : $cart->license,
-            "season" => $result,
+            "comments" => $courses->comments,
+            "intro" => $intro_result,
+            "name" => $courses->name,
+            "price" => $courses->price,
+            "teacher_name" => $courses->teacher_name,
+            "hour" => $courses->hour,
+            "description" => $courses->description,
+            "score" => $courses->score,
+            "license" => $license == null ? "" : $license,
+            "season" => $result
         ]);
     }
 
     public function createcart(Request $request){
 
         $course = Course::findOrFail($request->course_id);
-        $user = User::findOrFail($request->user_id);
+        $user = User::where("phone",$request->phone)->first();
 
         $response = Http::withHeaders([
             '$LEVEL' => -1,
@@ -201,7 +232,7 @@ class ApiController extends Controller
         $key = $res->key;
 
         $cart = Cart::create([
-            "user_id" => $request->user_id,
+            "user_id" => $user->id,
             "course_id" => $request->course_id,
             "license" => $key,
         ]);
@@ -223,18 +254,26 @@ class ApiController extends Controller
 
         $courses = $course->map(function($item){
             $car = Cart::where("course_id",$item->id)->first();
+            $total = 0;
+            if($item->percent > 0){
+                $percent = ($item->price * $item->percent)/100;
+                $total = $item->price - $percent;
+            }else{
+                $total = $item->price;
+            }
             return [
                 "id" => $item->id,
                 "name" => $item->name,
                 "percent" => $item->percent,
                 "spot_id" => $item->spot_id,
-                "price" => $item->price,
+                "price" => $total,
                 "image" => "https://bilingual.patrisbirjand.ir/public/courses_image/".$item->image,
             ];
         });
 
         return response()->json([
-            "result" => $courses
+            "result" => $courses,
+            "total" => $courses->sum("price")
         ]);
     }
 
@@ -242,8 +281,16 @@ class ApiController extends Controller
         $user = User::where("phone",$request->phone)->first();
         $course = Course::findOrFail($request->id);
         $cart = Cart::where("course_id",$course->id)->where("user_id",$user->id)->first();
+        if($course->percent > 0){
+            $percent = ($course->price * $course->percent)/100;
+            $total = $course->price - $percent;
+        }else{
+            $total = $course->price;
+        }
         $cart->delete();
-        return response()->json("OK");
+        return response()->json([
+            "price" => $total
+        ]);
     }
 
     public function mycourse(Request $request){
@@ -256,6 +303,7 @@ class ApiController extends Controller
         $courses = $course->map(function($item){
             $car = Cart::where("course_id",$item->id)->first();
             return [
+                "id" => $item->id,
                 "name" => $item->name,
                 "percent" => $item->percent,
                 "spot_id" => $item->spot_id,

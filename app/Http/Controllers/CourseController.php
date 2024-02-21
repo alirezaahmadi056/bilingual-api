@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use Faker\Core\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File as FacadesFile;
 
 class CourseController extends Controller
 {
@@ -33,6 +35,7 @@ class CourseController extends Controller
 
         Course::create([
             "name" => $request->name,
+            "teacher_name" => $request->teacher_name,
             "description" => $request->description,
             "price" => $request->price,
             "percent" => $request->percent,
@@ -71,8 +74,11 @@ class CourseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Course $course)
     {
-        //
+        $image_path = public_path("courses_image/$course->image");
+        FacadesFile::delete($image_path);
+        $course->delete();
+        return back();
     }
 }

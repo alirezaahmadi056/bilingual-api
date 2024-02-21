@@ -1,12 +1,12 @@
 @extends('layouts.master')
 
 @section("Title")
-آپلود ویدیو
+افزودن زیرفصل
 @endsection
 
 @section("content")
 <div class="flex justify-center items-center mt-20">
-    <form class="flex flex-col gap-5" action="{{ route("episodes.store") }}" method="POST" enctype="multipart/form-data">
+    <form class="flex flex-col gap-5 w-80" action="{{ route("seasons.sub.store") }}" method="POST" enctype="multipart/form-data">
         @csrf
         <input name="title" type="text" class=" rounded-md border-[#B2B2B2]" placeholder="تایتل">
         <div class="flex flex-col gap-2">
@@ -17,8 +17,6 @@
                 @endforeach
             </select>
         </div>
-        <label for="video">ویدیو:</label>
-        <input name="video" type="file" class=" rounded-md border-[#B2B2B2]">
         <button id="success" type="submit" onclick="PleaseWait()" class="bg-primary w-full text-[#FFFFFF] text-xl py-2 rounded-xl">ثبت</button>
     </form>
 </div>

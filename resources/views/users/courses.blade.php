@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('Title')
-دروه های خریداری شده (علیرضا احمدی)
+دروه های خریداری شده {{ $name }}
 @endsection
 
 @section('content')

@@ -4,8 +4,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ asset("css/style.css") }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
     @vite('resources/css/app.css')
-    <title>بیلینگول</title>
+    <title>Bilingual</title>
 </head>
 <body class="max-sm:relative">
     <section class="h-screen flex">
@@ -17,20 +18,24 @@
             </div>
             <ul class="mt-12 py-5">
                 <li class="flex px-10">
-                    <img class="w-7" src="@if(Route::is("home")) {{ asset("Icon/book.svg") }} @else {{ asset("Icon/book - 2.svg") }} @endif" alt="">
-                    <a href="{{ route("home") }}" class="text-xl mr-5 text-[#686868] @if(Route::is("home")) text-primary @endif">دروه ها</a>
+                    <img class="w-7" src="@if(Route::is("home") || Route::is("courses.create") || Route::is("courses.edit") || Route::is("seasons.edit") || Route::is("seasons.index") || Route::is("seasons.edit") || Route::is("seasons.create")) {{ asset("Icon/book.svg") }} @else {{ asset("Icon/book - 2.svg") }} @endif" alt="">
+                    <a href="{{ route("home") }}" class="text-xl mr-5 text-[#686868] @if(Route::is("home") || Route::is("courses.create") || Route::is("courses.edit") || Route::is("seasons.edit") || Route::is("seasons.index") || Route::is("seasons.edit") || Route::is("seasons.create")) text-primary @endif">دروه ها</a>
                 </li>
                 <li class="flex mt-12 px-10">
-                    <img class="w-7" src="@if(Route::is("users.index")) {{ asset("Icon/people.svg") }} @else {{ asset("Icon/people - 2.svg") }} @endif" alt="">
-                    <a href="{{ route("users.index") }}" class="text-xl mr-5 text-[#686868] @if(Route::is("users.index")) text-primary @endif">کاربران</a>
+                    <img class="w-7" src="@if(Route::is("users.index") || Route::is("users.show")) {{ asset("Icon/people.svg") }} @else {{ asset("Icon/people - 2.svg") }} @endif" alt="">
+                    <a href="{{ route("users.index") }}" class="text-xl mr-5 text-[#686868] @if(Route::is("users.index") || Route::is("users.show")) text-primary @endif">کاربران</a>
                 </li>
                 <li class="flex mt-12 px-10">
-                    <img class="w-7" src="@if(Route::is("articles.index")) {{ asset("Icon/book-square.svg") }} @else {{ asset("Icon/book-square - 2.svg") }} @endif" alt="">
-                    <a href="{{ route("articles.index") }}" class="text-xl mr-5 text-[#686868] @if(Route::is("articles.index")) text-primary @endif">مقالات</a>
+                    <img class="w-7" src="@if(Route::is("articles.index") || Route::is("articles.create") || Route::is("articles.edit")) {{ asset("Icon/book-square.svg") }} @else {{ asset("Icon/book-square - 2.svg") }} @endif" alt="">
+                    <a href="{{ route("articles.index") }}" class="text-xl mr-5 text-[#686868] @if(Route::is("articles.index") || Route::is("articles.create") || Route::is("articles.edit")) text-primary @endif">مقالات</a>
                 </li>
                 <li class="flex mt-12 px-10">
-                    <img class="w-7" src="@if(Route::is("sliders.index")) {{ asset("Icon/image.svg") }} @else {{ asset("Icon/image - 2.svg") }} @endif" alt="">
-                    <a href="{{ route("sliders.index") }}" class="text-xl mr-5 text-[#686868] @if(Route::is("sliders.index")) text-primary @endif">اسلایدر</a>
+                    <img class="w-7" src="@if(Route::is("sliders.index") || Route::is("sliders.edit") || Route::is("sliders.create")) {{ asset("Icon/image.svg") }} @else {{ asset("Icon/image - 2.svg") }} @endif" alt="">
+                    <a href="{{ route("sliders.index") }}" class="text-xl mr-5 text-[#686868] @if(Route::is("sliders.index") || Route::is("sliders.edit") || Route::is("sliders.create")) text-primary @endif">اسلایدر</a>
+                </li>
+                <li class="flex mt-12 px-10">
+                    <img class="w-7" src="@if(Route::is("comment.index") || Route::is("comment.edit") || Route::is("comment.show")) {{ asset("Icon/image.svg") }} @else {{ asset("Icon/image - 2.svg") }} @endif" alt="">
+                    <a href="{{ route("comment.index") }}" class="text-xl mr-5 text-[#686868] @if(Route::is("comment.index") || Route::is("comment.edit") || Route::is("comment.show")) text-primary @endif">کامنت ها</a>
                 </li>
             </ul>
         </aside>

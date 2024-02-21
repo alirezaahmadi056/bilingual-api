@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\EpisodeController;
 use App\Http\Controllers\ProfileController;
@@ -31,6 +32,8 @@ Route::middleware("auth")->group(function(){
 
     Route::delete("/seasons/{id}",[SeasonController::class,"destroy"])->name("seasons.destroy");
     Route::post("/seasons",[SeasonController::class,"store"])->name("seasons.store");
+    Route::get("/subseasons/create/{id}",[SeasonController::class,"createsub"])->name("seasons.sub.create");
+    Route::post("/subseasons/store",[SeasonController::class,"storesub"])->name("seasons.sub.store");
     Route::get("/season/{id}",[SeasonController::class,"create"])->name("seasons.create");
     Route::get("/seasons/{id}",[SeasonController::class,"index"])->name("seasons.index");
     Route::resource("/users",UserController::class)->names("users");
@@ -38,6 +41,7 @@ Route::middleware("auth")->group(function(){
     Route::resource("/sliders",SliderController::class)->names("sliders");
     Route::resource("/courses",CourseController::class)->names("courses");
     Route::resource("/episodes",EpisodeController::class)->names("episodes");
+    Route::resource("/comment",CommentsController::class)->names("comment");
 });
 
 Route::get('/dashboard', function () {
