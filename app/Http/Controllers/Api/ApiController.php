@@ -44,44 +44,67 @@ class ApiController extends Controller
     public function login(Request $request)
     {
         $user = User::where("phone", $request->phone)->get();
-        $hash_login = Hash::make($request->phone);
         $account = false;
-        $name = "";
+        $code = random_int(100000, 999999);
 
         if(isset($user[0])){
             $account = true;
-            $name = $user[0]->name;
-            $email = $user[0]->email;
-            $birthday = $user[0]->birthday;
+            $user[0]->update([
+                "code" => $code
+            ]);
+        }else if($account == false){
+            User::create([
+                "code" => $code,
+                "phone" => $request->phone
+            ]);
+        }
+
+        $username = '9120280085';
+        $password = 'c71f8e9';
+        $api = new MelipayamakApi($username, $password);
+        $sms = $api->sms('soap');
+        $to = $request->phone;
+        $text = array($code);
+        $bodyId = 207375;
+        $response = $sms->sendByBaseNumber($text, $to, $bodyId);
+
+        if($response){
+            return response()->json("OK");
+        }else{
+            return abort(500);
+        }
+    }
+
+    public function check_code(Request $request){
+        $user = User::where("phone", $request->phone)->get();
+        $hash_login = Hash::make($request->phone);
+        $account = false;
+
+        if(isset($user[0])){
+            if($user[0]->name != null){
+                $account = true;
+            }
             $user[0]->update([
                 "hash_login" => $hash_login
             ]);
-        }else if($account == false){
+        }else{
             User::create([
                 "phone" => $request->phone,
                 "hash_login" => $hash_login,
             ]);
         }
 
-        $code = random_int(100000, 999999);
-        $username = '9120280085';
-        $password = 'c71f8e9';
-        $api = new MelipayamakApi($username, $password);
-        $sms = $api->sms();
-        $to = $request->phone;
-        $from = '50004001280085';
-        $text = "کد ورود:$code \r\n bilingual";
-        $response = $sms->send($to, $from, $text);
-        $json = json_decode($response);
-
-        return response()->json([
-            "name" => $name == null ? "" : $name,
-            "code" => strval($code),
-            "account" => $account,
-            "hash_login" => $hash_login,
-            "email" => $email == null ? "" : $email,
-            "birthday" => $birthday == null ? "" : $birthday
-        ]);
+        if($request->code == $user[0]->code){
+            return response()->json([
+                "account" => $account,
+                "name" => $user[0]->name == null ? "" : $user[0]->name,
+                "hash_login" => $user[0]->hash_login,
+                "email" => $user[0]->email == null ? "" : $user[0]->email,
+                "birthday" => $user[0]->birthday == null ? "" : $user[0]->birthday
+            ]);
+        }else{
+            return abort(500);
+        }
     }
 
     public function updateuser(Request $request){
@@ -281,10 +304,14 @@ class ApiController extends Controller
             ];
         });
 
-        return response()->json([
-            "result" => $courses,
-            "total" => strval($courses->sum("price"))
-        ]);
+        if($request->hash_login == $user[0]->hash_login){
+            return response()->json([
+                "result" => $courses,
+                "total" => strval($courses->sum("price"))
+            ]);
+        }else{
+            return abort(404);
+        }
     }
 
     public function deletecart(Request $request){

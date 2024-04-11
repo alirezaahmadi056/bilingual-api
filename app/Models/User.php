@@ -25,7 +25,8 @@ class User extends Authenticatable
         "password",
         "email",
         "birthday",
-        "hash_login"
+        "hash_login",
+        "code"
     ];
 
     /**

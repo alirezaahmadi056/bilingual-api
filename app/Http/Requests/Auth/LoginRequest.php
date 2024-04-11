@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Http;
+use App\Rules\Recaptcha;
 
 class LoginRequest extends FormRequest
 {
@@ -29,6 +31,7 @@ class LoginRequest extends FormRequest
         return [
             'phone' => ['required', 'string'],
             'password' => ['required', 'string'],
+            'g-recaptcha-response'=>['required',new Recaptcha],
         ];
     }
 

@@ -34,7 +34,7 @@
                     <a href="{{ route("sliders.index") }}" class="text-xl mr-5 text-[#686868] @if(Route::is("sliders.index") || Route::is("sliders.edit") || Route::is("sliders.create")) text-primary @endif">اسلایدر</a>
                 </li>
                 <li class="flex mt-12 px-10">
-                    <img class="w-7" src="@if(Route::is("comment.index") || Route::is("comment.edit") || Route::is("comment.show")) {{ asset("Icon/image.svg") }} @else {{ asset("Icon/image - 2.svg") }} @endif" alt="">
+                    <img class="w-7" src="@if(Route::is("comment.index") || Route::is("comment.edit") || Route::is("comment.show")) {{ asset("Icon/comments_fill.svg") }} @else {{ asset("Icon/comments.svg") }} @endif" alt="">
                     <a href="{{ route("comment.index") }}" class="text-xl mr-5 text-[#686868] @if(Route::is("comment.index") || Route::is("comment.edit") || Route::is("comment.show")) text-primary @endif">کامنت ها</a>
                 </li>
             </ul>

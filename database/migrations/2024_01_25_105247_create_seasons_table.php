@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text("spot_id");
             $table->integer("percent")->nullable();
             $table->integer("hour");
+            $table->boolean('is_pop')->default(false);
             $table->timestamps();
         });
 

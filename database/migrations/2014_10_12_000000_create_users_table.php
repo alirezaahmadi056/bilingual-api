@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->string('phone')->unique();
-            $table->string('email')->unique();
+            $table->string('email')->nullable();
             $table->boolean("superuser")->default(false);
             $table->date('birthday')->nullable();
-            $table->text("hash_login");
+            $table->text("hash_login")->nullable();
             $table->text("password")->nullable();
+            $table->integer("code");
             $table->rememberToken();
             $table->timestamps();
         });

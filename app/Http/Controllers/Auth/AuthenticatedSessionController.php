@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Melipayamak\MelipayamakApi;
+use Illuminate\Support\Facades\Http;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -30,6 +31,11 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $user = User::where("phone",$request->phone)->first();
+        if($user == null) {
+            return redirect()->back()->withErrors("حساب شما تایید نشد!");
+        }
+        
+        
         if ($user->superuser == 1) {
             $request->authenticate();
 

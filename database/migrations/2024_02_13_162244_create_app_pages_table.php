@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('app_pages', function (Blueprint $table) {
             $table->id();
             $table->string("name");
+            $table->string("inapp");
             $table->timestamps();
         });
     }

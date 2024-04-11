@@ -14,7 +14,9 @@
             <img src="{{ asset("article_image/".$article->image) }}" alt="" class="rounded-tl-3xl rounded-tr-3xl">
             <div class="px-6 py-3 flex flex-col gap-5">
                 <h1 class="text-2xl text-center font-bold">{{ $article->title }}</h1>
-                <p>{{ $article->description }}</p>
+                <p style="	overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;">{!! strip_tags($article->description) !!}</p>
                 <div class="flex items-center gap-3">
                     <button class="flex justify-center items-center bg-primary w-full text-[#FFFFFF] text-[14px] py-2 rounded-xl"><img class="w-[16px] ml-2" src="{{ asset("Icon/edit-2.svg") }}" alt=""><a href="{{ route("articles.edit",$article->id) }}">ویرایش</a></button>
                     <form class=" basis-2/4 mt-4 w-full" action="{{ route("articles.destroy",$article->id) }}" method="post">

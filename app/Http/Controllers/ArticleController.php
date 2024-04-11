@@ -32,10 +32,13 @@ class ArticleController extends Controller
     {
         $fileName = time() . '.' . $request->image->extension();
         $request->image->move(public_path('article_image'), $fileName);
+        
+        $text = preg_replace("/^<p.*?>/", "",$request->description);
+        $description = preg_replace("|</p>$|", "",$text);
 
         Article::create([
             "title" => $request->title,
-            "description" => $request->description,
+            "description" => $description,
             "image" => $fileName,
         ]);
 
