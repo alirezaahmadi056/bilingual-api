@@ -11,6 +11,7 @@ use App\Models\Seasons;
 use App\Models\Slider;
 use App\Models\User;
 use App\Models\Episode;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -73,6 +74,23 @@ class ApiController extends Controller
         }else{
             return abort(500);
         }
+    }
+
+    public function createPayment(Request $request){
+        $payment = Payment::create([
+            "total" => $request->total,
+            "user_id" => $request->user_id,
+            "course_id" => $request->course_id,
+            "is_success" => $request->is_success,
+            "payment_code" => $request->code,
+        ]);
+
+        if($payment){
+            return response()->json([
+                "result" => "OK"
+            ]);
+        }
+        return abort(500);
     }
 
     public function check_code(Request $request){

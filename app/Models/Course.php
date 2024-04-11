@@ -25,4 +25,8 @@ class Course extends Model
     public function cart(){
         return $this->belongsTo(Cart::class);
     }
+
+    public function payment(){
+        return $this->belongsTo(Payment::class);
+    }
 }
